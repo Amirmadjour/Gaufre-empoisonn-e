@@ -32,7 +32,6 @@ public class ConfigDialog extends JDialog {
         main.add(title);
         main.add(Box.createVerticalStrut(15));
 
-        // Taille
         JPanel sizeP = styledPanel("Taille de la grille");
         sizeP.setLayout(new GridBagLayout());
         GridBagConstraints g = new GridBagConstraints();
@@ -51,7 +50,6 @@ public class ConfigDialog extends JDialog {
         main.add(sizeP);
         main.add(Box.createVerticalStrut(10));
 
-        // Mode
         JPanel modeP = styledPanel("Mode de jeu");
         modeP.setLayout(new BoxLayout(modeP, BoxLayout.Y_AXIS));
         humanVsHuman = radio("Humain vs Humain");
@@ -82,7 +80,6 @@ public class ConfigDialog extends JDialog {
         humanVsHuman.addActionListener(e -> aiOptionsPanel.setVisible(false));
         humanVsAI.addActionListener(e -> aiOptionsPanel.setVisible(true));
 
-        // Buttons
         JPanel bp = new JPanel(new FlowLayout(FlowLayout.CENTER,12,0));
         bp.setBackground(BG);
         JButton cancel = btn("Annuler", new Color(120,120,135));

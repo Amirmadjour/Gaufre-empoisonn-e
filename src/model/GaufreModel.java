@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class GaufreModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +30,7 @@ public class GaufreModel implements Serializable {
     }
 
     public void reset() {
-        grid = new boolean[rows][cols];
+        this.grid = new boolean[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 grid[i][j] = true;
@@ -74,11 +75,13 @@ public class GaufreModel implements Serializable {
         fireModelChanged();
     }
 
+
     public boolean isValidMove(int row, int col) {
         if (gameOver) return false;
         if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
         return grid[row][col];
     }
+
 
     public List<Move> getValidMoves() {
         List<Move> moves = new ArrayList<>();
@@ -97,6 +100,7 @@ public class GaufreModel implements Serializable {
         return moves;
     }
 
+
     public boolean isOnlyPoisonLeft() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -108,6 +112,7 @@ public class GaufreModel implements Serializable {
         return grid[0][0];
     }
 
+
     public boolean[][] copyGrid() {
         boolean[][] copy = new boolean[rows][cols];
         for (int i = 0; i < rows; i++) {
@@ -115,6 +120,7 @@ public class GaufreModel implements Serializable {
         }
         return copy;
     }
+
 
     public boolean isCellPresent(int row, int col) {
         if (row < 0 || row >= rows || col < 0 || col >= cols) return false;
