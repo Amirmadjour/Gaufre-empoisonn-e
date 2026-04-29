@@ -42,9 +42,8 @@ jar cmf MANIFEST.MF GaufreEmpoisonnee.jar -C bin .
 
 ### Exécuter le fichier JAR
 
-Vous pouvez jouer avec :
+Vous pouvez jouer avec OU double clique :
 
 ```bash
 java -jar GaufreEmpoisonnee.jar
 ```
-Vous pouvez également lancer le jeu en double-cliquant simplement sur le fichier `.jar`.
