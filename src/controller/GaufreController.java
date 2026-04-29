@@ -7,6 +7,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
+
+
+
 public class GaufreController {
 
     private GaufreModel model;
@@ -205,3 +208,7 @@ public class GaufreController {
         view.setMoveCount(history.getMoveCount());
     }
 }
+
+
+
+// i might just go ahead and kill my self 

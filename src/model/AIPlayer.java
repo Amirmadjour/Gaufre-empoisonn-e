@@ -2,14 +2,10 @@ package model;
 
 import java.util.*;
 
-/**
- * Utilise l'algorithme Minimax avec mémoïsation.
- * L'IA identifie tous les meilleurs coups (positions gagnantes) et en choisit
- * un aléatoirement pour ne pas être prévisible.
- */
+// uses mini-max and memoisation
 public class AIPlayer {
 
-    private final Map<String, Integer> memo;
+    private final Map<String, Integer> memo; // Cache pour Minimax
     private final Random random;
 
     public AIPlayer() {
@@ -17,9 +13,11 @@ public class AIPlayer {
         this.random = new Random();
     }
 
+    // find all good moves and select a random one of them
     public Move findBestMove(GaufreModel model) {
         List<Move> validMoves = model.getValidMoves();
         if (validMoves.isEmpty()) {
+            // force eat poison
             return new Move(0, 0, model.getCurrentPlayer());
         }
 
@@ -27,7 +25,7 @@ public class AIPlayer {
             return validMoves.get(0);
         }
 
-        memo.clear();
+        memo.clear(); 
 
         List<Move> winningMoves = new ArrayList<>();
         List<Move> allMoves = new ArrayList<>(validMoves);
@@ -37,10 +35,13 @@ public class AIPlayer {
         int cols = model.getCols();
 
         for (Move move : allMoves) {
+            // Simuler le coup
             boolean[][] newGrid = applyMoveToGrid(grid, move.getRow(), move.getCol(), rows, cols);
 
+            // Évaluer la position résultante pour l'adversaire
             int score = minimax(newGrid, rows, cols);
-            if (score == -1) {
+
+            if (score == -1) { // si l’adversaire perd → coup gagnant 
                 winningMoves.add(move);
             }
         }
@@ -48,24 +49,21 @@ public class AIPlayer {
         if (!winningMoves.isEmpty()) {
             return winningMoves.get(random.nextInt(winningMoves.size()));
         }
+
         return chooseBestLosingMove(allMoves, grid, rows, cols, model.getCurrentPlayer());
     }
 
-    /**
-     * Algorithme Minimax avec mémoïsation pour un jeu impartial.
-     * 
-     * @param grid La grille actuelle
-     * @param rows Nombre de lignes
-     * @param cols Nombre de colonnes
-     * @return 1 si position gagnante pour le joueur courant, -1 si position perdante
-     */
+
     private int minimax(boolean[][] grid, int rows, int cols) {
+
         String key = gridToKey(grid, rows, cols);
 
+        // an already treated state
         if (memo.containsKey(key)) {
             return memo.get(key);
         }
 
+        // terminal position : only poison left => current player loses
         if (isOnlyPoison(grid, rows, cols)) {
             memo.put(key, -1);
             return -1;
@@ -73,29 +71,33 @@ public class AIPlayer {
 
         List<int[]> moves = getValidMovesFromGrid(grid, rows, cols);
 
+        // try all moves if ANY move leads to a losing position it's winning
         for (int[] move : moves) {
             boolean[][] newGrid = applyMoveToGrid(grid, move[0], move[1], rows, cols);
-            int score = minimax(newGrid, rows, cols);
-            
-            if (score == -1) {
-                memo.put(key, 1);
+
+            int result = minimax(newGrid, rows, cols);
+
+            if (result == -1) {
+                memo.put(key, 1); // winning state
                 return 1;
             }
         }
 
+        // If no winning move exists, this is losing
         memo.put(key, -1);
         return -1;
     }
 
-    private Move chooseBestLosingMove(List<Move> moves, boolean[][] grid, int rows, int cols, int player) {
-        Move bestMove = null;
-        int maxCells = -1;
 
+    //if there is no wining moves, just make the game longer so we can increase the chance of the player fambling
+    private Move chooseBestLosingMove(List<Move> moves, boolean[][] grid, int rows, int cols, int player) {
         List<Move> bestMoves = new ArrayList<>();
+        int maxCells = -1;
 
         for (Move move : moves) {
             boolean[][] newGrid = applyMoveToGrid(grid, move.getRow(), move.getCol(), rows, cols);
             int cellCount = countCells(newGrid, rows, cols);
+
             if (cellCount > maxCells) {
                 maxCells = cellCount;
                 bestMoves.clear();
@@ -107,6 +109,7 @@ public class AIPlayer {
 
         return bestMoves.get(random.nextInt(bestMoves.size()));
     }
+
 
     private boolean[][] applyMoveToGrid(boolean[][] grid, int row, int col, int rows, int cols) {
         boolean[][] newGrid = new boolean[rows][cols];
@@ -121,9 +124,7 @@ public class AIPlayer {
         return newGrid;
     }
 
-    /**
-     * Vérifie si seule la case (0,0) reste.
-     */
+
     private boolean isOnlyPoison(boolean[][] grid, int rows, int cols) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -134,6 +135,7 @@ public class AIPlayer {
         }
         return grid[0][0];
     }
+
 
     private List<int[]> getValidMovesFromGrid(boolean[][] grid, int rows, int cols) {
         List<int[]> moves = new ArrayList<>();
@@ -150,6 +152,8 @@ public class AIPlayer {
         return moves;
     }
 
+
+    // Génère une clé unique pour la position (pour la mémoïsation)
     private String gridToKey(boolean[][] grid, int rows, int cols) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < rows; i++) {
@@ -163,6 +167,10 @@ public class AIPlayer {
         return sb.toString();
     }
 
+
+    /**
+     * Compte le nombre de cellules restantes.
+     */
     private int countCells(boolean[][] grid, int rows, int cols) {
         int count = 0;
         for (int i = 0; i < rows; i++) {

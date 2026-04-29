@@ -2,9 +2,8 @@ package model;
 
 import java.io.Serializable;
 
-/**
- * Enregistre l'état du plateau avant le coup pour permettre l'annulation.
- */
+
+//allow to do/undo a Move
 public class MoveCommand implements Serializable {
     private static final long serialVersionUID = 1L;
 
